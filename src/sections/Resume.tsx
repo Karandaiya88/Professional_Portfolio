@@ -75,6 +75,110 @@ function Stars({ count }: { count: number }) {
   );
 }
 
+type TimelineExperience = (typeof TIMELINE)[number];
+
+function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }) {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+
+  return (
+    <div ref={ref} className="relative grid grid-cols-[1fr_60px_1fr] gap-0 mb-16 last:mb-0 items-start">
+
+      {/* ── Left: Testimonial Card ── */}
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={inView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 0.68, 0, 1.2] }}
+        className="glass-card card-shimmer rounded-[18px] p-5 mr-6
+          hover:border-white/18 hover:-translate-y-1 transition-all duration-300"
+      >
+        <Stars count={exp.testimonial.stars} />
+        <p className="text-[13px] text-white/60 leading-[1.8] mb-4 italic">
+          &ldquo;{exp.testimonial.quote}&rdquo;
+        </p>
+        <div className="flex items-center gap-2 pt-3 border-t border-white/[0.07]">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[16px]"
+            style={{ background: `${exp.color}20`, border: `1px solid ${exp.color}40` }}>
+            {exp.icon}
+          </div>
+          <div>
+            <p className="text-[12px] font-bold" style={{ color: exp.color }}>
+              {exp.testimonial.author}
+            </p>
+            <p className="text-[10.5px] text-white/35">{exp.testimonial.handle}</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Center: Timeline dot + line ── */}
+      <div className="flex flex-col items-center relative">
+        {/* Line top */}
+        {index > 0 && (
+          <div className="w-px flex-1 mb-2" style={{ background: `linear-gradient(to bottom, transparent, ${exp.color}60)`, minHeight: "20px" }} />
+        )}
+        {/* Icon circle */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={inView ? { scale: 1, opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 200 }}
+          className="w-12 h-12 rounded-full flex items-center justify-center
+            text-[20px] flex-shrink-0 z-10 relative"
+          style={{
+            background: `radial-gradient(circle, ${exp.color}30, ${exp.color}10)`,
+            border: `2px solid ${exp.color}`,
+            boxShadow: `0 0 20px ${exp.color}60, 0 0 40px ${exp.color}20`,
+          }}
+        >
+          {exp.icon}
+        </motion.div>
+        {/* Line bottom */}
+        {index < TIMELINE.length - 1 && (
+          <div className="w-px flex-1 mt-2" style={{ background: `linear-gradient(to bottom, ${exp.color}60, transparent)`, minHeight: "40px" }} />
+        )}
+      </div>
+
+      {/* ── Right: Experience Details ── */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={inView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.65, delay: 0.15, ease: [0.22, 0.68, 0, 1.2] }}
+        className="pl-6"
+      >
+        {/* Period badge */}
+        <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px]
+          font-black tracking-widest uppercase mb-3"
+          style={{ background: `${exp.color}15`, border: `1px solid ${exp.color}30`, color: exp.color }}>
+          {exp.period}
+        </span>
+
+        {/* Role */}
+        <h3 className="font-display text-[22px] font-bold tracking-[-0.5px] leading-tight mb-1">
+          {exp.role}
+        </h3>
+        <p className="text-[13px] font-semibold mb-5" style={{ color: exp.color }}>
+          {exp.company}
+        </p>
+
+        {/* Responsibilities label */}
+        <p className="text-[10.5px] font-black tracking-[0.1em] uppercase
+          text-white/35 italic mb-3">
+          Responsibilities
+        </p>
+
+        {/* Bullet points */}
+        <ul className="flex flex-col gap-2">
+          {exp.responsibilities.map((r, ri) => (
+            <li key={ri} className="flex items-start gap-2.5 text-[13px] text-white/55 leading-relaxed">
+              <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
+                style={{ background: exp.color, boxShadow: `0 0 6px ${exp.color}` }} />
+              {r}
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Resume() {
   const { ref: dlRef, inView: dlIn } = useInView({ triggerOnce: true, threshold: 0.1 });
 
@@ -88,106 +192,9 @@ export default function Resume() {
 
       {/* ── Timeline (Image 1 style) ── */}
       <div className="mt-14 relative">
-        {TIMELINE.map((exp, i) => {
-          const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
-          return (
-            <div key={i} ref={ref} className="relative grid grid-cols-[1fr_60px_1fr] gap-0 mb-16 last:mb-0 items-start">
-
-              {/* ── Left: Testimonial Card ── */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 0.68, 0, 1.2] }}
-                className="glass-card card-shimmer rounded-[18px] p-5 mr-6
-                  hover:border-white/18 hover:-translate-y-1 transition-all duration-300"
-              >
-                <Stars count={exp.testimonial.stars} />
-                <p className="text-[13px] text-white/60 leading-[1.8] mb-4 italic">
-                  &ldquo;{exp.testimonial.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-2 pt-3 border-t border-white/[0.07]">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-[16px]"
-                    style={{ background: `${exp.color}20`, border: `1px solid ${exp.color}40` }}>
-                    {exp.icon}
-                  </div>
-                  <div>
-                    <p className="text-[12px] font-bold" style={{ color: exp.color }}>
-                      {exp.testimonial.author}
-                    </p>
-                    <p className="text-[10.5px] text-white/35">{exp.testimonial.handle}</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* ── Center: Timeline dot + line ── */}
-              <div className="flex flex-col items-center relative">
-                {/* Line top */}
-                {i > 0 && (
-                  <div className="w-px flex-1 mb-2" style={{ background: `linear-gradient(to bottom, transparent, ${exp.color}60)`, minHeight: "20px" }} />
-                )}
-                {/* Icon circle */}
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={inView ? { scale: 1, opacity: 1 } : {}}
-                  transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="w-12 h-12 rounded-full flex items-center justify-center
-                    text-[20px] flex-shrink-0 z-10 relative"
-                  style={{
-                    background: `radial-gradient(circle, ${exp.color}30, ${exp.color}10)`,
-                    border: `2px solid ${exp.color}`,
-                    boxShadow: `0 0 20px ${exp.color}60, 0 0 40px ${exp.color}20`,
-                  }}
-                >
-                  {exp.icon}
-                </motion.div>
-                {/* Line bottom */}
-                {i < TIMELINE.length - 1 && (
-                  <div className="w-px flex-1 mt-2" style={{ background: `linear-gradient(to bottom, ${exp.color}60, transparent)`, minHeight: "40px" }} />
-                )}
-              </div>
-
-              {/* ── Right: Experience Details ── */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.65, delay: 0.15, ease: [0.22, 0.68, 0, 1.2] }}
-                className="pl-6"
-              >
-                {/* Period badge */}
-                <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px]
-                  font-black tracking-widest uppercase mb-3"
-                  style={{ background: `${exp.color}15`, border: `1px solid ${exp.color}30`, color: exp.color }}>
-                  {exp.period}
-                </span>
-
-                {/* Role */}
-                <h3 className="font-display text-[22px] font-bold tracking-[-0.5px] leading-tight mb-1">
-                  {exp.role}
-                </h3>
-                <p className="text-[13px] font-semibold mb-5" style={{ color: exp.color }}>
-                  {exp.company}
-                </p>
-
-                {/* Responsibilities label */}
-                <p className="text-[10.5px] font-black tracking-[0.1em] uppercase
-                  text-white/35 italic mb-3">
-                  Responsibilities
-                </p>
-
-                {/* Bullet points */}
-                <ul className="flex flex-col gap-2">
-                  {exp.responsibilities.map((r, ri) => (
-                    <li key={ri} className="flex items-start gap-2.5 text-[13px] text-white/55 leading-relaxed">
-                      <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
-                        style={{ background: exp.color, boxShadow: `0 0 6px ${exp.color}` }} />
-                      {r}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
-          );
-        })}
+        {TIMELINE.map((exp, i) => (
+          <TimelineItem key={i} exp={exp} index={i} />
+        ))}
       </div>
 
       {/* ── Download Resume Card ── */}
