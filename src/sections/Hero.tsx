@@ -1,9 +1,12 @@
 "use client";
-// src/sections/Hero.tsx — Premium 3D Hero with typewriter + 3D tilt canvas + floating shapes
+// src/sections/Hero.tsx
+// Option A: Photo + 3D Sphere both
+// Image 2 (black suit) used for Hero — matches dark theme perfectly
 
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { stats } from "@/data/portfolio";
 
 // ── Typewriter Hook ──
@@ -33,13 +36,13 @@ function useTypewriter(words: string[], speed = 80, pause = 1800) {
   return display;
 }
 
-// ── 3D Canvas with Tilt ──
-function HeroCanvas() {
+// ── Hero Visual: Photo + Sphere combo ──
+function HeroVisual() {
   const ref  = useRef<HTMLDivElement>(null);
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(rawY, [-1, 1], [14, -14]), { stiffness: 200, damping: 28 });
-  const rotateY = useSpring(useTransform(rawX, [-1, 1], [-14, 14]), { stiffness: 200, damping: 28 });
+  const rotateX = useSpring(useTransform(rawY, [-1, 1], [10, -10]), { stiffness: 180, damping: 28 });
+  const rotateY = useSpring(useTransform(rawX, [-1, 1], [-10, 10]), { stiffness: 180, damping: 28 });
 
   const handleMouse = (e: React.MouseEvent) => {
     const el = ref.current; if (!el) return;
@@ -48,21 +51,13 @@ function HeroCanvas() {
     rawY.set(((e.clientY - r.top)  / r.height - 0.5) * 2);
   };
 
-  const PARTICLES = [
-    { size: 6, color: "#00f5ff", top: "12%", left: "76%", dur: "3.1s" },
-    { size: 3, color: "#a855f7", top: "68%", left: "8%",  dur: "4.7s", delay: "-1.3s" },
-    { size: 5, color: "#00f5ff", top: "42%", left: "50%", dur: "3.6s", delay: "-2s"   },
-    { size: 3, color: "#f472b6", top: "78%", left: "60%", dur: "5.2s", delay: "-0.7s" },
-    { size: 4, color: "#a855f7", top: "22%", left: "16%", dur: "4.0s", delay: "-1.8s" },
-    { size: 2, color: "#34d399", top: "55%", left: "88%", dur: "3.8s", delay: "-0.4s" },
-    { size: 3, color: "#f472b6", top: "35%", left: "30%", dur: "4.4s", delay: "-2.5s" },
-  ];
-
   const BADGES = [
-    { label: "FastAPI",  top: "14%", left: "4%",    right: "auto", delay: "0s"   },
-    { label: "Next.js",  top: "72%", left: "3%",    right: "auto", delay: "0.5s" },
-    { label: "Groq AI",  top: "14%", left: "auto",  right: "4%",   delay: "1s"   },
-    { label: "Docker",   top: "72%", left: "auto",  right: "3%",   delay: "1.5s" },
+    { label: "FastAPI",  top: "12%", left: "2%",   right: "auto", delay: "0s"   },
+    { label: "Next.js",  top: "75%", left: "2%",   right: "auto", delay: "0.6s" },
+    { label: "Groq AI",  top: "12%", left: "auto", right: "2%",   delay: "1.1s" },
+    { label: "Docker",   top: "75%", left: "auto", right: "2%",   delay: "1.6s" },
+    { label: "Python",   top: "44%", left: "1%",   right: "auto", delay: "0.3s" },
+    { label: "Llama 3",  top: "44%", left: "auto", right: "1%",   delay: "0.9s" },
   ];
 
   return (
@@ -71,82 +66,114 @@ function HeroCanvas() {
       onMouseMove={handleMouse}
       onMouseLeave={() => { rawX.set(0); rawY.set(0); }}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 900 }}
-      className="relative w-full h-[500px] rounded-[28px] border border-white/[0.09]
-        bg-white/[0.03] backdrop-blur-xl overflow-hidden flex items-center justify-center
-        float-y"
+      className="relative w-full h-[560px] flex items-center justify-center float-y"
     >
-      {/* Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(124,58,237,0.25)_0%,rgba(0,245,255,0.07)_45%,transparent_70%)]" />
-      {/* Grid */}
-      <div className="hero-grid-bg" />
-      {/* Corners */}
-      {["top-3.5 left-3.5 border-t border-l","top-3.5 right-3.5 border-t border-r",
-        "bottom-3.5 left-3.5 border-b border-l","bottom-3.5 right-3.5 border-b border-r"]
-        .map((cls, i) => <div key={i} className={`absolute w-5 h-5 ${cls} border-[#00f5ff]/40`} />)}
+      {/* ── Background: Grid + Glow ── */}
+      <div className="absolute inset-0 rounded-[28px] overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(124,58,237,0.22)_0%,rgba(0,245,255,0.06)_45%,transparent_70%)]" />
+        <div className="hero-grid-bg opacity-40" />
+      </div>
 
-      {/* Sphere + Rings */}
-      <div className="relative w-[220px] h-[220px] flex items-center justify-center"
-        style={{ transform: "translateZ(30px)" }}>
+      {/* ── 3D Sphere behind photo ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ transform: "translateZ(-20px)" }}>
+        {/* Orbit rings */}
         {[
-          { cls: "ring-orbit-a", w: "300px", h: "300px", bc: "rgba(0,245,255,0.16)"  },
-          { cls: "ring-orbit-b", w: "380px", h: "220px", bc: "rgba(168,85,247,0.16)" },
-          { cls: "ring-orbit-c", w: "430px", h: "430px", bc: "rgba(124,58,237,0.1)"  },
+          { cls: "ring-orbit-a", w: "340px", h: "340px", bc: "rgba(0,245,255,0.1)"  },
+          { cls: "ring-orbit-b", w: "420px", h: "240px", bc: "rgba(168,85,247,0.1)" },
+          { cls: "ring-orbit-c", w: "480px", h: "480px", bc: "rgba(124,58,237,0.07)"},
         ].map((r, i) => (
           <div key={i} className={`absolute rounded-full border ${r.cls}`}
             style={{ width: r.w, height: r.h, borderColor: r.bc,
               top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
         ))}
 
-        {/* Sphere */}
-        <div className="sphere-spin w-[220px] h-[220px] rounded-full relative flex-shrink-0"
+        {/* Glowing orb behind */}
+        <div className="absolute w-[260px] h-[260px] rounded-full"
           style={{
-            background: "radial-gradient(circle at 30% 30%,rgba(0,245,255,0.95) 0%,rgba(124,58,237,0.88) 36%,rgba(168,85,247,0.68) 60%,rgba(3,0,22,0.96) 100%)",
-            boxShadow: "0 0 80px rgba(0,245,255,0.3),0 0 160px rgba(124,58,237,0.18),inset -28px -28px 55px rgba(0,0,0,0.46),inset 24px 24px 48px rgba(0,245,255,0.12)",
-          }}>
-          <div className="absolute top-[17%] left-[17%] w-[30%] h-[16%] bg-white/20 rounded-full blur-[7px] -rotate-[30deg]" />
-          <div className="absolute top-[40%] left-[10%] w-[15%] h-[8%] bg-white/10 rounded-full blur-[4px]" />
-        </div>
-
-        {/* Particles */}
-        {PARTICLES.map((p, i) => (
-          <div key={i} className="absolute rounded-full"
-            style={{ width: p.size, height: p.size, background: p.color,
-              top: p.top, left: p.left,
-              animation: `particleFloat ${p.dur} linear infinite`,
-              animationDelay: p.delay ?? "0s",
-              boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
-            }} />
-        ))}
+            background: "radial-gradient(circle,rgba(0,245,255,0.15) 0%,rgba(124,58,237,0.1) 50%,transparent 70%)",
+            filter: "blur(30px)",
+          }} />
       </div>
 
-      {/* Floating tech badges */}
+      {/* ── Photo Frame ── */}
+      <div className="relative z-10" style={{ transform: "translateZ(30px)" }}>
+        {/* Rotating holo border */}
+        <div className="absolute inset-[-4px] rounded-full"
+          style={{
+            background: "linear-gradient(135deg,#00f5ff,#a855f7,#f472b6,#00f5ff)",
+            backgroundSize: "300% 300%",
+            animation: "holoShift 5s ease infinite, avatarRing 8s linear infinite",
+            padding: "3px",
+          }} />
+
+        {/* Outer glow ring */}
+        <div className="absolute inset-[-12px] rounded-full border border-[#00f5ff]/20
+          animate-ping" style={{ animationDuration: "3s" }} />
+
+        {/* Photo container */}
+        <div className="relative w-[300px] h-[300px] rounded-full overflow-hidden border-[3px]
+          border-[#030014]"
+          style={{ boxShadow: "0 0 60px rgba(0,245,255,0.3), 0 0 120px rgba(124,58,237,0.2)" }}
+        >
+          <Image
+            src="/images/karan-hero.png"
+            alt="Karan Daiya"
+            fill
+            className="object-cover object-top"
+            priority
+          />
+          {/* Subtle dark overlay at bottom for blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-16
+            bg-gradient-to-t from-[#030014]/60 to-transparent" />
+        </div>
+
+        {/* Status badge on photo */}
+        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2
+          flex items-center gap-1.5 px-3 py-1.5 rounded-full
+          bg-[#030014]/90 border border-[#34d399]/30 backdrop-blur-md whitespace-nowrap">
+          <span className="w-2 h-2 rounded-full bg-[#34d399] animate-blink" />
+          <span className="text-[11px] font-bold text-[#34d399] tracking-wide">
+            Open to Work
+          </span>
+        </div>
+      </div>
+
+      {/* ── Floating tech badges ── */}
       {BADGES.map((b, i) => (
         <div key={i}
-          className="absolute px-2.5 py-1 text-[10px] font-bold rounded-full
-            bg-white/[0.06] border border-white/[0.12] text-white/60 backdrop-blur-sm"
+          className="absolute px-2.5 py-1 text-[10px] font-bold rounded-full z-20
+            bg-white/[0.07] border border-white/[0.14] text-white/65 backdrop-blur-sm"
           style={{
             top: b.top, left: b.left, right: b.right,
-            animation: `floatY ${3 + i * 0.4}s ease-in-out infinite`,
+            animation: `floatY ${3.2 + i * 0.35}s ease-in-out infinite`,
             animationDelay: b.delay,
           }}>
           {b.label}
         </div>
       ))}
 
-      {/* R3F label */}
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 font-mono text-[9px]
-        tracking-widest uppercase text-[#00f5ff]/36 whitespace-nowrap select-none">
-        {"// <Canvas> — React Three Fiber mount point"}
-      </p>
+      {/* ── Particles ── */}
+      {[
+        { size: 5, color: "#00f5ff", top: "20%", left: "75%", dur: "3.2s" },
+        { size: 3, color: "#a855f7", top: "65%", left: "8%",  dur: "4.8s", delay: "-1.2s" },
+        { size: 4, color: "#f472b6", top: "80%", left: "60%", dur: "5.1s", delay: "-0.6s" },
+        { size: 3, color: "#34d399", top: "18%", left: "18%", dur: "4.1s", delay: "-1.7s" },
+      ].map((p, i) => (
+        <div key={i} className="absolute rounded-full pointer-events-none"
+          style={{ width: p.size, height: p.size, background: p.color,
+            top: p.top, left: p.left,
+            animation: `particleFloat ${p.dur} linear infinite`,
+            animationDelay: p.delay ?? "0s",
+            boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
+          }} />
+      ))}
     </motion.div>
   );
 }
 
 // ── Animation variants ──
-const container = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.11 } },
-};
+const container = { hidden: {}, visible: { transition: { staggerChildren: 0.11 } } };
 const item = {
   hidden:  { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 0.68, 0, 1.2] } },
@@ -216,12 +243,12 @@ export default function Hero() {
             </Link>
           </motion.div>
 
-          {/* Social quick links */}
+          {/* Social links */}
           <motion.div variants={item} className="flex gap-3 mt-7">
             {[
-              { href: "https://github.com/Karandaiya88",             label: "GH" },
-              { href: "https://www.linkedin.com/in/karan-d88/",      label: "LI" },
-              { href: "https://www.instagram.com/exclusive.karan/",  label: "IG" },
+              { href: "https://github.com/Karandaiya88",            label: "GH" },
+              { href: "https://www.linkedin.com/in/karan-d88/",     label: "LI" },
+              { href: "https://www.instagram.com/exclusive.karan/", label: "IG" },
             ].map(({ href, label }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-white/[0.05] border border-white/[0.1]
@@ -234,12 +261,12 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* ── Right: 3D Canvas ── */}
+        {/* ── Right: Photo + 3D Visual ── */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 0.68, 0, 1.2] }}>
-          <HeroCanvas />
+          <HeroVisual />
         </motion.div>
       </div>
 
