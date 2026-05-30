@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
+
 export const metadata: Metadata = {
   title: "Karan Daiya — Full-Stack Developer & AI Engineer",
   description:

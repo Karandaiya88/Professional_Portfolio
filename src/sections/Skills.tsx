@@ -58,7 +58,7 @@ export default function Skills() {
             whileHover={{ y:-8,scale:1.05 }}
             className="flex flex-col items-center gap-2 sm:gap-3 cursor-default"
             style={{ animation:roleIn?`floatY ${3.5+i*0.3}s ease-in-out infinite`:"none",
-              animationDelay:`${i*0.4}s` }}>
+               }}>
             <div className="w-[80px] h-[105px] sm:w-[100px] sm:h-[130px] lg:w-[110px] lg:h-[140px]
               rounded-[50px] flex items-center justify-center border relative overflow-hidden
               transition-all duration-300"

@@ -97,7 +97,7 @@ function HeroVisual() {
           rounded-full overflow-hidden border-[3px] border-[#030014]"
           style={{ boxShadow:"0 0 60px rgba(0,245,255,0.3),0 0 120px rgba(124,58,237,0.2)" }}>
           <Image src="/images/karan-hero.png" alt="Karan Daiya"
-            fill className="object-cover object-top" priority />
+            fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover object-top" />
           <div className="absolute bottom-0 left-0 right-0 h-16
             bg-gradient-to-t from-[#030014]/60 to-transparent" />
         </div>
