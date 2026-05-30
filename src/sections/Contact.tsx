@@ -50,7 +50,7 @@ export default function Contact() {
       <SectionHeader eyebrow="Contact"
         heading={<>Let&apos;s Build Something <span className="grad-text">Extraordinary</span></>} />
 
-      <div ref={ref} className="grid grid-cols-2 gap-12 mt-12 items-start">
+      <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-12 items-start">
 
         {/* ── Left: Form ── */}
         <motion.form ref={formRef} onSubmit={submit}

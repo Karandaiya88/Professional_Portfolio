@@ -40,7 +40,7 @@ export default function Social() {
     <SectionWrapper id="social">
       <SectionHeader eyebrow="Connect" heading="GitHub & Social Links" />
 
-      <div ref={ref} className="grid grid-cols-2 gap-6 mt-10">
+      <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
         {/* GitHub card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -13,7 +13,7 @@ export default function Certifications() {
     <SectionWrapper id="certifications">
       <SectionHeader eyebrow="Certifications" heading="Credentials & Learning"
         sub="Continuous learning is core to how I work — from web fundamentals to LLM engineering." />
-      <div ref={ref} className="grid grid-cols-3 gap-4 mt-10">
+      <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
         {certifications.map((cert,i) => (
           <motion.div key={i}
             initial={{ opacity:0,y:22 }} animate={inView?{opacity:1,y:0}:{}}

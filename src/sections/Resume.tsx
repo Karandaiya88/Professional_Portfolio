@@ -75,13 +75,11 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-type TimelineExperience = (typeof TIMELINE)[number];
-
-function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }) {
+function TimelineEntry({ exp }: { exp: (typeof TIMELINE)[number] }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
-    <div ref={ref} className="relative grid grid-cols-[1fr_60px_1fr] gap-0 mb-16 last:mb-0 items-start">
+    <div key={exp.period} ref={ref} className="relative flex flex-col lg:grid lg:grid-cols-[1fr_60px_1fr] gap-0 mb-16 last:mb-0 items-start">
 
       {/* ── Left: Testimonial Card ── */}
       <motion.div
@@ -89,7 +87,7 @@ function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }
         animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 0.68, 0, 1.2] }}
         className="glass-card card-shimmer rounded-[18px] p-5 mr-6
-          hover:border-white/18 hover:-translate-y-1 transition-all duration-300"
+                  hover:border-white/18 hover:-translate-y-1 transition-all duration-300"
       >
         <Stars count={exp.testimonial.stars} />
         <p className="text-[13px] text-white/60 leading-[1.8] mb-4 italic">
@@ -111,17 +109,15 @@ function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }
 
       {/* ── Center: Timeline dot + line ── */}
       <div className="flex flex-col items-center relative">
-        {/* Line top */}
-        {index > 0 && (
+        {TIMELINE.findIndex((entry) => entry.period === exp.period) > 0 && (
           <div className="w-px flex-1 mb-2" style={{ background: `linear-gradient(to bottom, transparent, ${exp.color}60)`, minHeight: "20px" }} />
         )}
-        {/* Icon circle */}
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={inView ? { scale: 1, opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 200 }}
           className="w-12 h-12 rounded-full flex items-center justify-center
-            text-[20px] flex-shrink-0 z-10 relative"
+                    text-[20px] flex-shrink-0 z-10 relative"
           style={{
             background: `radial-gradient(circle, ${exp.color}30, ${exp.color}10)`,
             border: `2px solid ${exp.color}`,
@@ -130,8 +126,7 @@ function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }
         >
           {exp.icon}
         </motion.div>
-        {/* Line bottom */}
-        {index < TIMELINE.length - 1 && (
+        {TIMELINE.findIndex((entry) => entry.period === exp.period) < TIMELINE.length - 1 && (
           <div className="w-px flex-1 mt-2" style={{ background: `linear-gradient(to bottom, ${exp.color}60, transparent)`, minHeight: "40px" }} />
         )}
       </div>
@@ -143,14 +138,12 @@ function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }
         transition={{ duration: 0.65, delay: 0.15, ease: [0.22, 0.68, 0, 1.2] }}
         className="pl-6"
       >
-        {/* Period badge */}
         <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px]
-          font-black tracking-widest uppercase mb-3"
+                  font-black tracking-widest uppercase mb-3"
           style={{ background: `${exp.color}15`, border: `1px solid ${exp.color}30`, color: exp.color }}>
           {exp.period}
         </span>
 
-        {/* Role */}
         <h3 className="font-display text-[22px] font-bold tracking-[-0.5px] leading-tight mb-1">
           {exp.role}
         </h3>
@@ -158,13 +151,11 @@ function TimelineItem({ exp, index }: { exp: TimelineExperience; index: number }
           {exp.company}
         </p>
 
-        {/* Responsibilities label */}
         <p className="text-[10.5px] font-black tracking-[0.1em] uppercase
-          text-white/35 italic mb-3">
+                  text-white/35 italic mb-3">
           Responsibilities
         </p>
 
-        {/* Bullet points */}
         <ul className="flex flex-col gap-2">
           {exp.responsibilities.map((r, ri) => (
             <li key={ri} className="flex items-start gap-2.5 text-[13px] text-white/55 leading-relaxed">
@@ -192,8 +183,8 @@ export default function Resume() {
 
       {/* ── Timeline (Image 1 style) ── */}
       <div className="mt-14 relative">
-        {TIMELINE.map((exp, i) => (
-          <TimelineItem key={i} exp={exp} index={i} />
+        {TIMELINE.map((exp) => (
+          <TimelineEntry key={exp.period} exp={exp} />
         ))}
       </div>
 
