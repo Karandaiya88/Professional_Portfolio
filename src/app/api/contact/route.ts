@@ -1,5 +1,4 @@
-// src/app/api/contact/route.ts
-// Resend API — Email sending backend route
+
 
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,8 +20,8 @@ export async function POST(req: NextRequest) {
 
     // ── Send Email ──
     const { data, error } = await resend.emails.send({
-      from:    "Portfolio Contact <onboarding@resend.dev>", // 🔁 Change after domain verify
-      to:      ["karandaiya88@gmail.com"],                  // 🔁 Your real email here
+      from:    "Portfolio Contact <onboarding@resend.dev>", 
+      to:      ["crazypart813@gmail.com"],                  
       replyTo: email,
       subject: `📩 New Contact: ${subject || "Message from Portfolio"}`,
       html: `
