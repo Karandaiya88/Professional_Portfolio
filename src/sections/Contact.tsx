@@ -69,19 +69,19 @@ export default function Contact() {
 
     // Basic validation
     if (!name.trim() || !email.trim() || !message.trim()) {
-      showToast("error", "⚠️ Name, email aur message required hain!");
+      showToast("error", "⚠️ Name, email and message are required!");
       return;
     }
 
     // Email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      showToast("error", "⚠️ Valid email address daalo!");
+      showToast("error", "⚠️ Please enter a valid email address!");
       return;
     }
 
     setLoading(true);
-    showToast("loading", "📤 Message bheja ja raha hai...");
+    showToast("loading", "📤 Sending your message...");
 
     try {
       const res = await fetch("/api/contact", {
@@ -93,15 +93,15 @@ export default function Contact() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        showToast("success", "✅ Message bhej diya! Main jald reply karunga 🚀");
+        showToast("success", "✅ Message sent! I'll get back to you soon 🚀");
         // Reset form
         setName(""); setEmail(""); setInquiryType("");
         setSubject(""); setMessage("");
       } else {
-        showToast("error", `❌ ${data.error ?? "Kuch galat hua, dobara try karo."}`);
+        showToast("error", `❌ ${data.error ?? "Something went wrong. Please try again."}`);
       }
     } catch {
-      showToast("error", "❌ Network error. Internet check karo aur dobara try karo.");
+      showToast("error", "❌ Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -152,7 +152,7 @@ export default function Contact() {
               </label>
               <input
                 type="text"
-                placeholder="Tumhara naam"
+                placeholder="Your full name"
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
@@ -166,7 +166,7 @@ export default function Contact() {
               </label>
               <input
                 type="email"
-                placeholder="tumhara@email.com"
+                placeholder="your@email.com"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -187,7 +187,7 @@ export default function Contact() {
               className={`${INPUT} cursor-pointer`}
             >
               <option value="" style={{ background: "#0d0b1e" }}>
-                Select karo...
+                Select type...
               </option>
               {INQUIRY_TYPES.map(t => (
                 <option key={t} value={t} style={{ background: "#0d0b1e" }}>{t}</option>
@@ -203,7 +203,7 @@ export default function Contact() {
             </label>
             <input
               type="text"
-              placeholder="Kya baat karni hai?"
+              placeholder="What's this about?"
               value={subject}
               onChange={e => setSubject(e.target.value)}
               className={INPUT}
@@ -218,7 +218,7 @@ export default function Contact() {
             </label>
             <textarea
               rows={4}
-              placeholder="Apna project, idea ya opportunity batao..."
+              placeholder="Tell me about your project, idea or opportunity..."
               required
               value={message}
               onChange={e => setMessage(e.target.value)}
@@ -258,7 +258,7 @@ export default function Contact() {
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white
                   rounded-full animate-spin" />
-                Bheja ja raha hai...
+                Sending...
               </span>
             ) : (
               "Send Message →"
@@ -267,7 +267,7 @@ export default function Contact() {
 
           {/* Form note */}
           <p className="text-[11px] text-white/25 text-center">
-            * Required fields. Main 24 ghante mein reply karunga.
+            * Required fields. I typically respond within 24 hours.
           </p>
         </motion.form>
 
