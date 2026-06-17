@@ -205,7 +205,7 @@ export default function Resume() {
             Complete overview of experience, skills, projects, and certifications. PDF format, ready to share.
           </p>
           <div className="flex gap-3 mt-5 flex-wrap">
-            <a href="./Resume.pdf" download
+            <a href="./Karan_Daiya.pdf" download
               className="px-6 py-2.5 bg-gradient-to-r from-[#00f5ff] to-[#7c3aed]
                 rounded-full text-[#020010] text-[13.5px] font-black
                 hover:-translate-y-0.5 transition-all duration-200
